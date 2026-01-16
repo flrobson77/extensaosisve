@@ -1,0 +1,480 @@
+/**
+ * CSS baseado no site oficial IFSP Guarulhos
+ * https://gru.ifsp.edu.br/
+ */
+
+/* ============================================
+   VARIÁVEIS OFICIAIS IFSP
+   ============================================ */
+:root {
+    /* Cores institucionais oficiais */
+    --ifsp-verde: #006633;
+    --ifsp-verde-escuro: #004d26;
+    --ifsp-verde-claro: #00864d;
+    --ifsp-vermelho: #C8102E;
+    --ifsp-vermelho-escuro: #a00d25;
+    
+    /* Cores neutras */
+    --cor-branco: #ffffff;
+    --cor-cinza-muito-claro: #f8f9fa;
+    --cor-cinza-claro: #e9ecef;
+    --cor-cinza-medio: #dee2e6;
+    --cor-cinza: #6c757d;
+    --cor-cinza-escuro: #343a40;
+    --cor-texto: #212529;
+    
+    /* Tipografia oficial */
+    --font-principal: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-titulos: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    
+    /* Sombras oficiais */
+    --sombra-card: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    --sombra-hover: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    
+    /* Espaçamentos */
+    --espacamento-secao: 60px;
+    --espacamento-card: 30px;
+    --border-radius: 0.25rem;
+}
+
+/* ============================================
+   RESET GERAL
+   ============================================ */
+* {
+    box-sizing: border-box;
+}
+
+/* Reset do Cassiopeia e outros templates */
+.com-content-article,
+.com-content-article__body,
+.item-page,
+article.item-page,
+.blog,
+.blog-featured {
+    all: initial !important;
+    display: block !important;
+    width: 100% !important;
+    font-family: var(--font-principal) !important;
+}
+
+body {
+    font-family: var(--font-principal);
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--cor-texto);
+    background-color: var(--cor-branco);
+    margin: 0;
+    padding: 0;
+}
+
+/* ============================================
+   CABEÇALHO OFICIAL IFSP
+   ============================================ */
+.ifsp-header-oficial {
+    background: linear-gradient(135deg, var(--ifsp-verde) 0%, var(--ifsp-verde-escuro) 100%);
+    color: var(--cor-branco);
+    padding: 2rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.ifsp-header-oficial .container {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.ifsp-header-oficial h1 {
+    font-family: var(--font-titulos);
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    color: var(--cor-branco);
+    letter-spacing: -0.5px;
+}
+
+.ifsp-header-oficial .subtitle {
+    font-size: 1.125rem;
+    margin: 0;
+    opacity: 0.95;
+    font-weight: 300;
+}
+
+/* ============================================
+   CONTAINER PRINCIPAL
+   ============================================ */
+.ifsp-container-oficial {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: var(--espacamento-secao) 15px;
+}
+
+/* ============================================
+   SEÇÕES
+   ============================================ */
+.ifsp-secao {
+    margin-bottom: var(--espacamento-secao);
+}
+
+.ifsp-secao:last-child {
+    margin-bottom: 0;
+}
+
+/* ============================================
+   TÍTULOS
+   ============================================ */
+.ifsp-titulo-secao {
+    font-family: var(--font-titulos);
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--ifsp-verde);
+    margin: 0 0 1.5rem 0;
+    padding-bottom: 0.75rem;
+    border-bottom: 3px solid var(--ifsp-verde);
+    position: relative;
+}
+
+.ifsp-titulo-secao::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 80px;
+    height: 3px;
+    background: var(--ifsp-vermelho);
+}
+
+h3.ifsp-subtitulo {
+    font-family: var(--font-titulos);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--ifsp-verde);
+    margin: 1.5rem 0 1rem 0;
+}
+
+/* ============================================
+   CARDS OFICIAIS
+   ============================================ */
+.ifsp-card-oficial {
+    background: var(--cor-branco);
+    border-radius: var(--border-radius);
+    box-shadow: var(--sombra-card);
+    padding: var(--espacamento-card);
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+    border: 1px solid var(--cor-cinza-claro);
+}
+
+.ifsp-card-oficial:hover {
+    box-shadow: var(--sombra-hover);
+    transform: translateY(-2px);
+}
+
+.ifsp-card-header-oficial {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--cor-cinza-claro);
+}
+
+.ifsp-card-title-oficial {
+    font-family: var(--font-titulos);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--ifsp-verde);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.ifsp-card-body {
+    color: var(--cor-texto);
+    line-height: 1.7;
+}
+
+.ifsp-card-body p {
+    margin: 0 0 1rem 0;
+}
+
+.ifsp-card-body p:last-child {
+    margin-bottom: 0;
+}
+
+/* ============================================
+   DESTAQUE/CALLOUT
+   ============================================ */
+.ifsp-destaque {
+    background: linear-gradient(135deg, var(--cor-cinza-muito-claro) 0%, var(--cor-branco) 100%);
+    border-left: 4px solid var(--ifsp-verde);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: var(--border-radius);
+}
+
+.ifsp-destaque-importante {
+    background: linear-gradient(135deg, #fff5f5 0%, var(--cor-branco) 100%);
+    border-left: 4px solid var(--ifsp-vermelho);
+}
+
+/* ============================================
+   GRID DE ITENS
+   ============================================ */
+.ifsp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.ifsp-grid-item {
+    background: var(--cor-branco);
+    border: 1px solid var(--cor-cinza-claro);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.ifsp-grid-item:hover {
+    box-shadow: var(--sombra-hover);
+    border-color: var(--ifsp-verde);
+    transform: translateY(-3px);
+}
+
+.ifsp-grid-item h4 {
+    color: var(--ifsp-verde);
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0 0 0.75rem 0;
+}
+
+.ifsp-grid-item p {
+    color: var(--cor-cinza);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* ============================================
+   ÍCONES/BADGES
+   ============================================ */
+.ifsp-icone {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    background: var(--ifsp-verde);
+    color: var(--cor-branco);
+    border-radius: 50%;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.ifsp-badge {
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--cor-branco);
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+}
+
+.ifsp-badge-verde {
+    background-color: var(--ifsp-verde);
+}
+
+.ifsp-badge-vermelho {
+    background-color: var(--ifsp-vermelho);
+}
+
+/* ============================================
+   LISTAS
+   ============================================ */
+.ifsp-lista {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0;
+}
+
+.ifsp-lista li {
+    padding: 0.75rem 0 0.75rem 2rem;
+    border-bottom: 1px solid var(--cor-cinza-claro);
+    position: relative;
+}
+
+.ifsp-lista li:last-child {
+    border-bottom: none;
+}
+
+.ifsp-lista li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--ifsp-verde);
+    font-weight: bold;
+    font-size: 1.125rem;
+}
+
+/* ============================================
+   LINKS E BOTÕES
+   ============================================ */
+a {
+    color: var(--ifsp-verde);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--ifsp-verde-escuro);
+    text-decoration: underline;
+}
+
+.ifsp-btn {
+    display: inline-block;
+    padding: 0.625rem 1.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.ifsp-btn-verde {
+    color: var(--cor-branco);
+    background-color: var(--ifsp-verde);
+    border-color: var(--ifsp-verde);
+}
+
+.ifsp-btn-verde:hover {
+    background-color: var(--ifsp-verde-escuro);
+    border-color: var(--ifsp-verde-escuro);
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-card);
+}
+
+.ifsp-btn-vermelho {
+    color: var(--cor-branco);
+    background-color: var(--ifsp-vermelho);
+    border-color: var(--ifsp-vermelho);
+}
+
+.ifsp-btn-vermelho:hover {
+    background-color: var(--ifsp-vermelho-escuro);
+    border-color: var(--ifsp-vermelho-escuro);
+    text-decoration: none;
+}
+
+.ifsp-btn-outline {
+    color: var(--ifsp-verde);
+    background-color: transparent;
+    border-color: var(--ifsp-verde);
+}
+
+.ifsp-btn-outline:hover {
+    color: var(--cor-branco);
+    background-color: var(--ifsp-verde);
+}
+
+/* ============================================
+   TABELAS
+   ============================================ */
+.ifsp-tabela {
+    width: 100%;
+    margin: 1.5rem 0;
+    border-collapse: collapse;
+    background: var(--cor-branco);
+}
+
+.ifsp-tabela thead th {
+    background: var(--ifsp-verde);
+    color: var(--cor-branco);
+    padding: 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid var(--ifsp-verde-escuro);
+}
+
+.ifsp-tabela tbody td {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--cor-cinza-claro);
+}
+
+.ifsp-tabela tbody tr:hover {
+    background: var(--cor-cinza-muito-claro);
+}
+
+/* ============================================
+   RODAPÉ
+   ============================================ */
+.ifsp-footer-oficial {
+    background: var(--cor-cinza-escuro);
+    color: var(--cor-branco);
+    padding: 2rem 0;
+    margin-top: var(--espacamento-secao);
+    text-align: center;
+}
+
+.ifsp-footer-oficial p {
+    margin: 0.5rem 0;
+    font-size: 0.9375rem;
+}
+
+.ifsp-footer-oficial a {
+    color: var(--cor-branco);
+    text-decoration: underline;
+}
+
+.ifsp-footer-oficial a:hover {
+    color: var(--cor-cinza-claro);
+}
+
+/* ============================================
+   RESPONSIVIDADE
+   ============================================ */
+@media (max-width: 768px) {
+    .ifsp-header-oficial h1 {
+        font-size: 1.5rem;
+    }
+    
+    .ifsp-header-oficial .subtitle {
+        font-size: 1rem;
+    }
+    
+    .ifsp-container-oficial {
+        padding: 2rem 15px;
+    }
+    
+    .ifsp-titulo-secao {
+        font-size: 1.5rem;
+    }
+    
+    .ifsp-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .ifsp-card-oficial {
+        padding: 1.5rem;
+    }
+}
+
+/* ============================================
+   UTILITÁRIOS
+   ============================================ */
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+.fw-bold { font-weight: 700; }
+.fw-normal { font-weight: 400; }

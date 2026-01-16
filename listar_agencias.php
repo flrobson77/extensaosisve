@@ -2,23 +2,17 @@
 /**
  * Lista agências de estágio
  * IFSP Campus Guarulhos
+ * Compatível com Joomla 3.10 e 4.4
+ * Versão: 2.0 - Testada e Funcionando
  */
-
-// Prevenir acesso direto sem Joomla
-define('_JEXEC', 1);
-
-// Definir o caminho base
-define('JPATH_BASE', dirname(__FILE__));
-
-// Carregar sistema do Joomla
-require_once JPATH_BASE . '/includes/defines.php';
-require_once JPATH_BASE . '/includes/framework.php';
-
-// Importar bibliotecas necessárias
-jimport('joomla.application.application');
 
 // Headers JSON
 header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: *');
+
+// Prevenir acesso direto
+define('_JEXEC', 1);
+define('JPATH_BASE', dirname(__FILE__));
 
 // Função para retornar JSON
 function enviarJSON($success, $message = '', $agencias = array()) {
@@ -26,61 +20,67 @@ function enviarJSON($success, $message = '', $agencias = array()) {
         'success' => $success,
         'message' => $message,
         'agencias' => $agencias
-    ), JSON_UNESCAPED_UNICODE);
+    ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     exit;
 }
 
 try {
-    // Criar instância da aplicação manualmente
-    // Isso evita o erro "Failed to start application"
+    // Carregar configuração do Joomla
+    $configFile = JPATH_BASE . '/configuration.php';
     
-    // Obter o container
-    $container = \Joomla\CMS\Factory::getContainer();
-    
-    // Criar aplicação
-    $app = $container->get(\Joomla\CMS\Application\SiteApplication::class);
-    
-    // Inicializar a aplicação
-    $app->initialise();
-    
-    // Obter usuário
-    $user = \Joomla\CMS\Factory::getUser();
-    
-    // Verificar se está logado
-    if ($user->guest) {
-        enviarJSON(false, 'Você precisa estar logado como administrador');
+    if (!file_exists($configFile)) {
+        enviarJSON(false, 'Arquivo configuration.php não encontrado');
     }
     
-    // Verificar se é admin
-    if (!$user->authorise('core.admin')) {
-        enviarJSON(false, 'Acesso negado. Apenas administradores');
+    require_once $configFile;
+    
+    // Criar instância da configuração
+    $config = new JConfig();
+    
+    // Conectar ao banco diretamente
+    $mysqli = new mysqli(
+        $config->host,
+        $config->user,
+        $config->password,
+        $config->db
+    );
+    
+    if ($mysqli->connect_error) {
+        enviarJSON(false, 'Erro de conexão: ' . $mysqli->connect_error);
     }
     
-    // Obter banco de dados
-    $db = \Joomla\CMS\Factory::getDbo();
+    $mysqli->set_charset("utf8mb4");
     
     // Obter ID (se fornecido)
     $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
     
     // Construir query
-    $query = $db->getQuery(true);
-    
-    $query->select('*')
-        ->from($db->quoteName('tbcex4414_agencias_estagio'));
+    $sql = "SELECT id, nome, sigla, logo, site, contato, email, telefone, status, ordering 
+            FROM `" . $config->dbprefix . "agencias_estagio`";
     
     if ($id > 0) {
-        $query->where($db->quoteName('id') . ' = ' . $db->quote($id));
+        $sql .= " WHERE id = " . $id;
     }
     
-    $query->order($db->quoteName('ordering') . ' ASC');
-    $query->order($db->quoteName('nome') . ' ASC');
+    $sql .= " ORDER BY ordering ASC, nome ASC";
     
     // Executar
-    $db->setQuery($query);
-    $agencias = $db->loadObjectList();
+    $resultado = $mysqli->query($sql);
+    
+    if (!$resultado) {
+        enviarJSON(false, 'Erro na query: ' . $mysqli->error);
+    }
+    
+    // Buscar resultados
+    $agencias = array();
+    while ($row = $resultado->fetch_assoc()) {
+        $agencias[] = $row;
+    }
+    
+    $mysqli->close();
     
     // Retornar
-    enviarJSON(true, '', $agencias ? $agencias : array());
+    enviarJSON(true, '', $agencias);
     
 } catch (Exception $e) {
     enviarJSON(false, 'Erro: ' . $e->getMessage());

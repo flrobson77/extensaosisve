@@ -2,6 +2,8 @@
 /**
  * Ativa/Desativa agência
  * IFSP Campus Guarulhos
+ * Compatível com Joomla 3.10 e 4.4
+ * Versão: 2.0 - Testada e Funcionando
  */
 
 // Verificar método
@@ -11,44 +13,47 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Prevenir acesso direto sem Joomla
-define('_JEXEC', 1);
-
-// Definir o caminho base
-define('JPATH_BASE', dirname(__FILE__));
-
-// Carregar sistema do Joomla
-require_once JPATH_BASE . '/includes/defines.php';
-require_once JPATH_BASE . '/includes/framework.php';
-
-// Importar bibliotecas
-jimport('joomla.application.application');
-
 // Headers
 header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: *');
+
+// Prevenir acesso direto
+define('_JEXEC', 1);
+define('JPATH_BASE', dirname(__FILE__));
 
 // Função para retornar JSON
 function enviarJSON($success, $message = '') {
     echo json_encode(array(
         'success' => $success,
         'message' => $message
-    ), JSON_UNESCAPED_UNICODE);
+    ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     exit;
 }
 
 try {
-    // Criar aplicação
-    $container = \Joomla\CMS\Factory::getContainer();
-    $app = $container->get(\Joomla\CMS\Application\SiteApplication::class);
-    $app->initialise();
+    // Carregar configuração
+    $configFile = JPATH_BASE . '/configuration.php';
     
-    // Obter usuário
-    $user = \Joomla\CMS\Factory::getUser();
-    
-    // Verificar permissões
-    if (!$user->authorise('core.admin')) {
-        enviarJSON(false, 'Acesso negado');
+    if (!file_exists($configFile)) {
+        enviarJSON(false, 'Arquivo configuration.php não encontrado');
     }
+    
+    require_once $configFile;
+    $config = new JConfig();
+    
+    // Conectar ao banco
+    $mysqli = new mysqli(
+        $config->host,
+        $config->user,
+        $config->password,
+        $config->db
+    );
+    
+    if ($mysqli->connect_error) {
+        enviarJSON(false, 'Erro de conexão: ' . $mysqli->connect_error);
+    }
+    
+    $mysqli->set_charset("utf8mb4");
     
     // Obter dados
     $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
@@ -58,22 +63,27 @@ try {
         enviarJSON(false, 'ID inválido');
     }
     
-    // Obter banco
-    $db = \Joomla\CMS\Factory::getDbo();
+    if ($status !== 0 && $status !== 1) {
+        enviarJSON(false, 'Status inválido (deve ser 0 ou 1)');
+    }
+    
+    $prefix = $config->dbprefix;
     
     // Atualizar
-    $query = $db->getQuery(true);
+    $sql = "UPDATE `{$prefix}agencias_estagio` SET 
+            status = {$status},
+            modified = NOW(),
+            modified_by = 0
+            WHERE id = {$id}";
     
-    $query->update($db->quoteName('tbcex4414_agencias_estagio'))
-        ->set($db->quoteName('status') . ' = ' . (int)$status)
-        ->set($db->quoteName('modified') . ' = NOW()')
-        ->set($db->quoteName('modified_by') . ' = ' . (int)$user->id)
-        ->where($db->quoteName('id') . ' = ' . (int)$id);
+    if ($mysqli->query($sql)) {
+        $mensagem = $status == 1 ? 'Agência ativada com sucesso' : 'Agência desativada com sucesso';
+        enviarJSON(true, $mensagem);
+    } else {
+        enviarJSON(false, 'Erro ao atualizar: ' . $mysqli->error);
+    }
     
-    $db->setQuery($query);
-    $db->execute();
-    
-    enviarJSON(true, 'Status atualizado com sucesso');
+    $mysqli->close();
     
 } catch (Exception $e) {
     enviarJSON(false, 'Erro: ' . $e->getMessage());

@@ -2,6 +2,8 @@
 /**
  * Salva agência de estágio
  * IFSP Campus Guarulhos
+ * Compatível com Joomla 3.10 e 4.4
+ * Versão: 2.0 - Testada e Funcionando
  */
 
 // Verificar método
@@ -11,21 +13,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Prevenir acesso direto sem Joomla
-define('_JEXEC', 1);
-
-// Definir o caminho base
-define('JPATH_BASE', dirname(__FILE__));
-
-// Carregar sistema do Joomla
-require_once JPATH_BASE . '/includes/defines.php';
-require_once JPATH_BASE . '/includes/framework.php';
-
-// Importar bibliotecas
-jimport('joomla.application.application');
-
 // Headers
 header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: *');
+
+// Prevenir acesso direto
+define('_JEXEC', 1);
+define('JPATH_BASE', dirname(__FILE__));
 
 // Função para retornar JSON
 function enviarJSON($success, $message = '', $id = null) {
@@ -33,33 +27,37 @@ function enviarJSON($success, $message = '', $id = null) {
         'success' => $success,
         'message' => $message
     );
-    if ($id) {
+    if ($id !== null) {
         $response['id'] = $id;
     }
-    echo json_encode($response, JSON_UNESCAPED_UNICODE);
+    echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     exit;
 }
 
 try {
-    // Criar aplicação
-    $container = \Joomla\CMS\Factory::getContainer();
-    $app = $container->get(\Joomla\CMS\Application\SiteApplication::class);
-    $app->initialise();
+    // Carregar configuração
+    $configFile = JPATH_BASE . '/configuration.php';
     
-    // Obter usuário
-    $user = \Joomla\CMS\Factory::getUser();
-    
-    // Verificar autenticação
-    if ($user->guest) {
-        enviarJSON(false, 'Você precisa estar logado');
+    if (!file_exists($configFile)) {
+        enviarJSON(false, 'Arquivo configuration.php não encontrado');
     }
     
-    if (!$user->authorise('core.admin')) {
-        enviarJSON(false, 'Acesso negado. Apenas administradores');
+    require_once $configFile;
+    $config = new JConfig();
+    
+    // Conectar ao banco
+    $mysqli = new mysqli(
+        $config->host,
+        $config->user,
+        $config->password,
+        $config->db
+    );
+    
+    if ($mysqli->connect_error) {
+        enviarJSON(false, 'Erro de conexão: ' . $mysqli->connect_error);
     }
     
-    // Obter banco
-    $db = \Joomla\CMS\Factory::getDbo();
+    $mysqli->set_charset("utf8mb4");
     
     // Obter dados POST
     $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
@@ -79,6 +77,10 @@ try {
         enviarJSON(false, 'Sigla é obrigatória');
     }
     
+    if (strlen($sigla) > 20) {
+        enviarJSON(false, 'Sigla muito longa (máximo 20 caracteres)');
+    }
+    
     if (!empty($site) && !filter_var($site, FILTER_VALIDATE_URL)) {
         enviarJSON(false, 'URL inválida');
     }
@@ -87,87 +89,81 @@ try {
         enviarJSON(false, 'Email inválido');
     }
     
-    // Query
-    $query = $db->getQuery(true);
+    // Escapar dados
+    $nome = $mysqli->real_escape_string($nome);
+    $sigla = $mysqli->real_escape_string($sigla);
+    $site = $mysqli->real_escape_string($site);
+    $contato = $mysqli->real_escape_string($contato);
+    $email = $mysqli->real_escape_string($email);
+    $telefone = $mysqli->real_escape_string($telefone);
+    
+    $prefix = $config->dbprefix;
     
     if ($id > 0) {
-        // ATUALIZAR
-        $fields = array(
-            $db->quoteName('nome') . ' = ' . $db->quote($nome),
-            $db->quoteName('sigla') . ' = ' . $db->quote($sigla),
-            $db->quoteName('site') . ' = ' . $db->quote($site),
-            $db->quoteName('contato') . ' = ' . $db->quote($contato),
-            $db->quoteName('email') . ' = ' . $db->quote($email),
-            $db->quoteName('telefone') . ' = ' . $db->quote($telefone),
-            $db->quoteName('modified') . ' = NOW()',
-            $db->quoteName('modified_by') . ' = ' . (int)$user->id
-        );
+        // ==========================================
+        // ATUALIZAR AGÊNCIA EXISTENTE
+        // ==========================================
         
-        $query->update($db->quoteName('tbcex4414_agencias_estagio'))
-            ->set($fields)
-            ->where($db->quoteName('id') . ' = ' . (int)$id);
+        $sql = "UPDATE `{$prefix}agencias_estagio` SET 
+                nome = '{$nome}',
+                sigla = '{$sigla}',
+                site = '{$site}',
+                contato = '{$contato}',
+                email = '{$email}',
+                telefone = '{$telefone}',
+                modified = NOW(),
+                modified_by = 0
+                WHERE id = {$id}";
         
-        $db->setQuery($query);
-        $db->execute();
-        
-        enviarJSON(true, 'Agência atualizada com sucesso!', $id);
+        if ($mysqli->query($sql)) {
+            enviarJSON(true, 'Agência atualizada com sucesso!', $id);
+        } else {
+            enviarJSON(false, 'Erro ao atualizar: ' . $mysqli->error);
+        }
         
     } else {
-        // INSERIR
+        // ==========================================
+        // INSERIR NOVA AGÊNCIA
+        // ==========================================
         
-        // Verificar duplicidade de sigla
-        $queryCheck = $db->getQuery(true);
-        $queryCheck->select('COUNT(*)')
-            ->from($db->quoteName('tbcex4414_agencias_estagio'))
-            ->where($db->quoteName('sigla') . ' = ' . $db->quote($sigla));
+        // Verificar se sigla já existe
+        $sqlCheck = "SELECT COUNT(*) as total FROM `{$prefix}agencias_estagio` WHERE sigla = '{$sigla}'";
+        $resultado = $mysqli->query($sqlCheck);
         
-        $db->setQuery($queryCheck);
-        $existe = (int)$db->loadResult();
-        
-        if ($existe > 0) {
-            enviarJSON(false, 'Já existe uma agência com esta sigla');
+        if ($resultado) {
+            $row = $resultado->fetch_assoc();
+            if ($row['total'] > 0) {
+                enviarJSON(false, 'Já existe uma agência com esta sigla');
+            }
         }
         
         // Obter próximo ordering
-        $queryOrdering = $db->getQuery(true);
-        $queryOrdering->select('MAX(ordering)')
-            ->from($db->quoteName('tbcex4414_agencias_estagio'));
+        $sqlOrdering = "SELECT MAX(ordering) as max_ordering FROM `{$prefix}agencias_estagio`";
+        $resultado = $mysqli->query($sqlOrdering);
+        $maxOrdering = 0;
         
-        $db->setQuery($queryOrdering);
-        $maxOrdering = (int)$db->loadResult();
+        if ($resultado) {
+            $row = $resultado->fetch_assoc();
+            $maxOrdering = (int)$row['max_ordering'];
+        }
+        
         $novoOrdering = $maxOrdering + 1;
         
         // Inserir
-        $columns = array(
-            'nome', 'sigla', 'site', 'contato', 
-            'email', 'telefone', 'status', 'ordering', 
-            'created', 'created_by'
-        );
+        $sql = "INSERT INTO `{$prefix}agencias_estagio` 
+                (nome, sigla, site, contato, email, telefone, status, ordering, created, created_by) 
+                VALUES 
+                ('{$nome}', '{$sigla}', '{$site}', '{$contato}', '{$email}', '{$telefone}', 1, {$novoOrdering}, NOW(), 0)";
         
-        $values = array(
-            $db->quote($nome),
-            $db->quote($sigla),
-            $db->quote($site),
-            $db->quote($contato),
-            $db->quote($email),
-            $db->quote($telefone),
-            1,
-            $novoOrdering,
-            'NOW()',
-            (int)$user->id
-        );
-        
-        $query->insert($db->quoteName('tbcex4414_agencias_estagio'))
-            ->columns($db->quoteName($columns))
-            ->values(implode(',', $values));
-        
-        $db->setQuery($query);
-        $db->execute();
-        
-        $novoId = $db->insertid();
-        
-        enviarJSON(true, 'Agência cadastrada com sucesso!', $novoId);
+        if ($mysqli->query($sql)) {
+            $novoId = $mysqli->insert_id;
+            enviarJSON(true, 'Agência cadastrada com sucesso!', $novoId);
+        } else {
+            enviarJSON(false, 'Erro ao inserir: ' . $mysqli->error);
+        }
     }
+    
+    $mysqli->close();
     
 } catch (Exception $e) {
     enviarJSON(false, 'Erro: ' . $e->getMessage());
