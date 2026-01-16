@@ -1,0 +1,77 @@
+<!-- Definir BASE_URL -->
+<script>
+var BASE_URL = 'https://cexhom.extensaoifsp.gru.br/';
+console.log('🏠 Base URL:', BASE_URL);
+</script>
+
+<!-- Carregar CSS -->
+<link rel="stylesheet" href="/media/com_vagasestagio/css/agencias-publico.css">
+
+<!-- PÁGINA DE AGÊNCIAS CONVENIADAS -->
+<div class="agencias-conveniadas">
+    
+    <!-- Cabeçalho -->
+    <header class="agencias-header">
+        <h1>Agências Conveniadas</h1>
+        <p>Parceiros oficiais para oportunidades de estágio</p>
+    </header>
+    
+    <!-- Container de conteúdo -->
+    <div class="agencias-container">
+        
+        <!-- Introdução -->
+        <div class="agencias-intro">
+            <p>
+                O IFSP Campus Guarulhos mantém convênio com diversas agências especializadas em estágio. 
+                Essas parcerias garantem oportunidades qualificadas e alinhadas com a formação de nossos estudantes. 
+                Entre em contato diretamente com as agências para conhecer as vagas disponíveis.
+            </p>
+        </div>
+        
+        <!-- Loading -->
+        <div id="agencias-loading" class="agencias-loading">
+            <div class="agencias-spinner"></div>
+            <p>Carregando agências conveniadas...</p>
+        </div>
+        
+        <!-- Tabela de Agências -->
+        <div class="agencias-table-wrapper" style="display: none;" id="agencias-table-wrapper">
+            <table class="agencias-table">
+                <thead>
+                    <tr>
+                        <th>Logo</th>
+                        <th>Agência</th>
+                        <th>E-mail</th>
+                        <th>Telefone</th>
+                    </tr>
+                </thead>
+                <tbody id="agencias-tbody">
+                    <!-- Agências serão carregadas aqui via JavaScript -->
+                </tbody>
+            </table>
+            
+            <!-- Contador -->
+            <div id="agencias-contador" class="agencias-contador"></div>
+        </div>
+        
+    </div>
+    
+    <!-- Rodapé -->
+    <footer class="agencias-footer">
+        <p>Coordenadoria de Extensão - IFSP Campus Guarulhos</p>
+        <p><a href="https://gru.ifsp.edu.br" target="_blank">gru.ifsp.edu.br</a></p>
+    </footer>
+    
+</div>
+
+<!-- Carregar JavaScript -->
+<script src="/media/com_vagasestagio/js/agencias-publico.js"></script>
+
+<script>
+// Mostrar tabela quando carregar
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        document.getElementById('agencias-table-wrapper').style.display = 'block';
+    }, 100);
+});
+</script>
