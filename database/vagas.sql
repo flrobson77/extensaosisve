@@ -1,0 +1,43 @@
+-- Substituir PREFIXO_ pelo seu prefixo (ex: tbcex4414_)
+
+-- Verificar se tabela existe
+SHOW TABLES LIKE '%vagas_estagio';
+
+-- Se não existir, criar:
+CREATE TABLE IF NOT EXISTS `tbcex4414_vagas_estagio` (
+  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `agencia_id` INT(11) UNSIGNED NOT NULL,
+  `codigo_vaga` VARCHAR(50) DEFAULT NULL,
+  `empresa` VARCHAR(150) NOT NULL,
+  `titulo` VARCHAR(200) NOT NULL,
+  `descricao` TEXT,
+  `requisitos` TEXT,
+  `atividades` TEXT,
+  `curso` VARCHAR(100) DEFAULT NULL,
+  `nivel_escolar` VARCHAR(50) DEFAULT NULL,
+  `area_profissional` VARCHAR(100) DEFAULT NULL,
+  `localidade` VARCHAR(100) DEFAULT NULL,
+  `horario` VARCHAR(100) DEFAULT NULL,
+  `bolsa_valor` DECIMAL(10,2) DEFAULT NULL,
+  `bolsa_beneficios` TEXT,
+  `imagem` VARCHAR(255) NOT NULL,
+  `arquivo_pdf` VARCHAR(255) DEFAULT NULL,
+  `url_vaga` VARCHAR(500) NOT NULL,
+  `email_contato` VARCHAR(100) DEFAULT NULL,
+  `telefone_contato` VARCHAR(20) DEFAULT NULL,
+  `data_inicio` DATE NOT NULL,
+  `data_fim` DATE NOT NULL,
+  `status` TINYINT(1) NOT NULL DEFAULT 1,
+  `destaque` TINYINT(1) NOT NULL DEFAULT 0,
+  `visualizacoes` INT(11) UNSIGNED NOT NULL DEFAULT 0,
+  `ordering` INT(11) NOT NULL DEFAULT 0,
+  `created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` INT(11) NOT NULL DEFAULT 0,
+  `modified` DATETIME DEFAULT NULL,
+  `modified_by` INT(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `idx_agencia` (`agencia_id`),
+  KEY `idx_data_fim` (`data_fim`),
+  KEY `idx_status` (`status`),
+  KEY `idx_destaque` (`destaque`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

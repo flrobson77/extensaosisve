@@ -1,0 +1,311 @@
+<!-- Definir BASE_URL -->
+<script>
+var BASE_URL = 'https://cexhom.extensaoifsp.gru.br/';
+console.log('🏠 Base URL:', BASE_URL);
+</script>
+
+<!-- Carregar CSS -->
+<link rel="stylesheet" href="/media/com_vagasestagio/css/admin-vagas.css">
+
+<!-- Container Principal -->
+<div class="vagas-admin-container">
+    
+    <!-- Cabeçalho -->
+    <header class="page-header-vagas">
+        <h1>📋 Gerenciamento de Vagas de Estágio</h1>
+        <p>Cadastre e gerencie as oportunidades de estágio para os alunos</p>
+    </header>
+    
+    <!-- Container de Mensagens -->
+    <div id="mensagem-container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;"></div>
+    
+    <!-- Container de Conteúdo -->
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px 40px 20px;">
+        
+        <!-- ========================================
+             FORMULÁRIO DE CADASTRO
+        ========================================= -->
+        <div class="form-card-vagas">
+            <h2>📝 Cadastrar Nova Vaga</h2>
+            
+            <form id="form-vaga" enctype="multipart/form-data">
+                
+                <!-- DADOS PRINCIPAIS -->
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="color: #006633; font-size: 1.25rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e0e0e0;">
+                        📌 Dados Principais
+                    </h3>
+                    
+                    <div class="form-row-2cols">
+                        <!-- Agência -->
+                        <div class="ifsp-form-group-vagas">
+                            <label for="agencia_id">Agência/Empresa <span class="required">*</span></label>
+                            <select id="agencia_id" name="agencia_id" class="ifsp-form-control-vagas" required>
+                                <option value="">Carregando agências...</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Código da Vaga -->
+                        <div class="ifsp-form-group-vagas">
+                            <label for="codigo_vaga">Código da Vaga</label>
+                            <input type="text" id="codigo_vaga" name="codigo_vaga" class="ifsp-form-control-vagas" placeholder="Ex: 5822840">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row-2cols">
+                        <!-- Empresa -->
+                        <div class="ifsp-form-group-vagas">
+                            <label for="empresa">Nome da Empresa <span class="required">*</span></label>
+                            <input type="text" id="empresa" name="empresa" class="ifsp-form-control-vagas" placeholder="Ex: LEPE INDÚSTRIA E COMÉRCIO LTDA" required>
+                        </div>
+                        
+                        <!-- Título -->
+                        <div class="ifsp-form-group-vagas">
+                            <label for="titulo">Título da Vaga <span class="required">*</span></label>
+                            <input type="text" id="titulo" name="titulo" class="ifsp-form-control-vagas" placeholder="Ex: Fundição de ferro e aço" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- DESCRIÇÃO E DETALHES -->
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="color: #006633; font-size: 1.25rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e0e0e0;">
+                        📝 Descrição e Detalhes
+                    </h3>
+                    
+                    <!-- Descrição -->
+                    <div class="ifsp-form-group-vagas">
+                        <label for="descricao">Descrição da Vaga</label>
+                        <textarea id="descricao" name="descricao" class="ifsp-form-control-vagas" rows="4" placeholder="Descreva a vaga de forma detalhada..."></textarea>
+                    </div>
+                    
+                    <!-- Requisitos -->
+                    <div class="ifsp-form-group-vagas">
+                        <label for="requisitos">Requisitos</label>
+                        <textarea id="requisitos" name="requisitos" class="ifsp-form-control-vagas" rows="3" placeholder="Ex: Cursando o 1º ao 6º semestre"></textarea>
+                    </div>
+                    
+                    <!-- Atividades -->
+                    <div class="ifsp-form-group-vagas">
+                        <label for="atividades">Atividades a Desenvolver</label>
+                        <textarea id="atividades" name="atividades" class="ifsp-form-control-vagas" rows="3" placeholder="Ex: Elaboração de manuais, movimentação de sistema interno..."></textarea>
+                    </div>
+                    
+                    <div class="form-row-2cols">
+                        <!-- Curso -->
+                        <div class="ifsp-form-group-vagas">
+                            <label for="curso">Curso</label>
+                            <input type="text" id="curso" name="curso" class="ifsp-form-control-vagas" placeholder="Ex: Mecânica, Automação...">
+                        </div>
+                        
+                        <!-- Nível Escolar -->
+                        <div class="ifsp-form-group-vagas">
+                            <label for="nivel_escolar">Nível Escolar</label>
+                            <select id="nivel_escolar" name="nivel_escolar" class="ifsp-form-control-vagas">
+                                <option value="">Selecione...</option>
+                                <option value="Técnico">Técnico</option>
+                                <option value="Superior">Superior</option>
+                                <option value="Pós-graduação">Pós-graduação</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Área Profissional -->
+                    <div class="ifsp-form-group-vagas">
+                        <label for="area_profissional">Área Profissional</label>
+                        <input type="text" id="area_profissional" name="area_profissional" class="ifsp-form-control-vagas" placeholder="Ex: Produção Mecânica">
+                    </div>
+                </div>
+                
+                <!-- LOCALIZAÇÃO E HORÁRIO -->
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="color: #006633; font-size: 1.25rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e0e0e0;">
+                        📍 Localização e Horário
+                    </h3>
+                    
+                    <div class="form-row-2cols">
+                        <!-- Localidade -->
+                        <div class="ifsp-form-group-vagas">
+                            <label for="localidade">Localidade</label>
+                            <input type="text" id="localidade" name="localidade" class="ifsp-form-control-vagas" placeholder="Ex: Vila Rosa Mineira - Guarulhos - SP">
+                        </div>
+                        
+                        <!-- Horário -->
+                        <div class="ifsp-form-group-vagas">
+                            <label for="horario">Horário</label>
+                            <input type="text" id="horario" name="horario" class="ifsp-form-control-vagas" placeholder="Ex: 08:00 às 15:00">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- BOLSA E BENEFÍCIOS -->
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="color: #006633; font-size: 1.25rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e0e0e0;">
+                        💰 Bolsa e Benefícios
+                    </h3>
+                    
+                    <div class="form-row-2cols">
+                        <!-- Valor da Bolsa -->
+                        <div class="ifsp-form-group-vagas">
+                            <label for="bolsa_valor">Valor da Bolsa Auxílio (R$)</label>
+                            <input type="text" id="bolsa_valor" name="bolsa_valor" class="ifsp-form-control-vagas" placeholder="Ex: R$ 1.500,00">
+                        </div>
+                        
+                        <!-- Benefícios -->
+                        <div class="ifsp-form-group-vagas">
+                            <label for="bolsa_beneficios">Outros Benefícios</label>
+                            <textarea id="bolsa_beneficios" name="bolsa_beneficios" class="ifsp-form-control-vagas" rows="3" placeholder="Ex: Assistência médica, Refeitório no local, Assistência odontológica"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- UPLOAD DE ARQUIVOS -->
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="color: #006633; font-size: 1.25rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e0e0e0;">
+                        📎 Arquivos
+                    </h3>
+                    
+                    <!-- Upload de Imagem -->
+                    <div class="ifsp-form-group-vagas">
+                        <label for="imagem">Imagem da Vaga <span class="required">*</span> (JPG, PNG ou GIF - Máx: 5MB)</label>
+                        <div class="file-upload-wrapper">
+                            <input type="file" id="imagem" name="imagem" class="file-upload-input" accept="image/jpeg,image/png,image/gif">
+                            <label for="imagem" class="file-upload-label">📷 Escolher Imagem</label>
+                            <span id="nome-imagem" class="file-upload-name">Nenhum arquivo selecionado</span>
+                        </div>
+                        <div id="preview-imagem" class="image-preview" style="display: none;"></div>
+                    </div>
+                    
+                    <!-- Upload de PDF -->
+                    <div class="ifsp-form-group-vagas">
+                        <label for="arquivo_pdf">Arquivo PDF da Vaga (Opcional - Máx: 10MB)</label>
+                        <div class="file-upload-wrapper">
+                            <input type="file" id="arquivo_pdf" name="arquivo_pdf" class="file-upload-input" accept="application/pdf">
+                            <label for="arquivo_pdf" class="file-upload-label">📄 Escolher PDF</label>
+                            <span id="nome-pdf" class="file-upload-name">Nenhum arquivo selecionado</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- CONTATO E LINK -->
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="color: #006633; font-size: 1.25rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e0e0e0;">
+                        📞 Contato e Link
+                    </h3>
+                    
+                    <div class="form-row-2cols">
+                        <!-- Email -->
+                        <div class="ifsp-form-group-vagas">
+                            <label for="email_contato">Email para Contato</label>
+                            <input type="email" id="email_contato" name="email_contato" class="ifsp-form-control-vagas" placeholder="contato@agencia.com.br">
+                        </div>
+                        
+                        <!-- Telefone -->
+                        <div class="ifsp-form-group-vagas">
+                            <label for="telefone_contato">Telefone para Contato</label>
+                            <input type="text" id="telefone_contato" name="telefone_contato" class="ifsp-form-control-vagas" placeholder="(11) 3003-2433">
+                        </div>
+                    </div>
+                    
+                    <!-- URL da Vaga -->
+                    <div class="ifsp-form-group-vagas">
+                        <label for="url_vaga">Link/URL da Vaga</label>
+                        <input type="url" id="url_vaga" name="url_vaga" class="ifsp-form-control-vagas" placeholder="https://www.ciee.org.br/portal/estudantes/vaga/12345">
+                    </div>
+                </div>
+                
+                <!-- PERÍODO DE PUBLICAÇÃO -->
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="color: #006633; font-size: 1.25rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e0e0e0;">
+                        📅 Período de Publicação
+                    </h3>
+                    
+                    <div class="form-row-2cols">
+                        <!-- Data Início -->
+                        <div class="ifsp-form-group-vagas">
+                            <label for="data_inicio">Data de Início da Publicação <span class="required">*</span></label>
+                            <input type="date" id="data_inicio" name="data_inicio" class="ifsp-form-control-vagas" required>
+                        </div>
+                        
+                        <!-- Data Fim -->
+                        <div class="ifsp-form-group-vagas">
+                            <label for="data_fim">Data de Término da Publicação <span class="required">*</span></label>
+                            <input type="date" id="data_fim" name="data_fim" class="ifsp-form-control-vagas" required>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #e9f5ef; padding: 1rem; border-radius: 6px; border-left: 4px solid #006633;">
+                        <p style="margin: 0; color: #006633; font-size: 0.9375rem;">
+                            <strong>ℹ️ Atenção:</strong> A vaga ficará visível para os alunos apenas entre as datas informadas. 
+                            Após a data de término, ela será automaticamente desativada.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- DESTAQUE -->
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="color: #006633; font-size: 1.25rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e0e0e0;">
+                        ⭐ Opções Especiais
+                    </h3>
+                    
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="destaque" name="destaque" value="1">
+                        <label for="destaque">⭐ Marcar esta vaga como DESTAQUE (aparecerá em posição prioritária)</label>
+                    </div>
+                </div>
+                
+                <!-- BOTÕES -->
+                <div class="form-actions-vagas">
+                    <button type="submit" class="ifsp-btn-vagas ifsp-btn-primary-vagas">
+                        💾 Cadastrar Vaga
+                    </button>
+                    <button type="button" id="btn-cancelar" class="ifsp-btn-vagas ifsp-btn-secondary-vagas">
+                        ❌ Cancelar
+                    </button>
+                </div>
+                
+            </form>
+        </div>
+        
+        <!-- ========================================
+             LISTA DE VAGAS CADASTRADAS
+        ========================================= -->
+        <div class="table-card-vagas">
+            <h2>
+                📊 Vagas Cadastradas
+                <span id="contador-vagas" style="font-size: 1rem; font-weight: normal; color: #666; margin-left: 1rem;">
+                    Carregando...
+                </span>
+            </h2>
+            
+            <div class="table-responsive-vagas">
+                <table class="ifsp-table-vagas">
+                    <thead>
+                        <tr>
+                            <th style="width: 100px;">Imagem</th>
+                            <th>Título / Empresa</th>
+                            <th style="width: 120px;">Agência</th>
+                            <th style="width: 140px;">Período</th>
+                            <th style="width: 100px;">Dias Restantes</th>
+                            <th style="width: 180px;">Status</th>
+                            <th style="width: 80px;">Views</th>
+                            <th style="width: 240px;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vagas-tbody">
+                        <tr>
+                            <td colspan="8" style="text-align: center; padding: 3rem;">
+                                <div style="font-size: 3rem; margin-bottom: 1rem;">⏳</div>
+                                <p>Carregando vagas...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<!-- Carregar JavaScript -->
+<script src="/media/com_vagasestagio/js/admin-vagas.js"></script>
