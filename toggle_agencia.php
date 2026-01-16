@@ -1,57 +1,53 @@
 <?php
 /**
- * Arquivo: toggle_agencia.php
- * Descrição: Ativa/Desativa agência
+ * Ativa/Desativa agência
  * IFSP Campus Guarulhos
  */
 
-// Desativar avisos
-error_reporting(E_ERROR | E_PARSE);
-ini_set('display_errors', 0);
+// Verificar método
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Content-Type: application/json');
+    echo json_encode(array('success' => false, 'message' => 'Método não permitido'));
+    exit;
+}
+
+// Prevenir acesso direto sem Joomla
+define('_JEXEC', 1);
+
+// Definir o caminho base
+define('JPATH_BASE', dirname(__FILE__));
+
+// Carregar sistema do Joomla
+require_once JPATH_BASE . '/includes/defines.php';
+require_once JPATH_BASE . '/includes/framework.php';
+
+// Importar bibliotecas
+jimport('joomla.application.application');
 
 // Headers
 header('Content-Type: application/json; charset=utf-8');
 
 // Função para retornar JSON
-function retornarJSON($success, $message = '') {
+function enviarJSON($success, $message = '') {
     echo json_encode(array(
         'success' => $success,
         'message' => $message
-    ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    ), JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-// Verificar método
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    retornarJSON(false, 'Método não permitido.');
-}
-
 try {
-    // Definir constantes
-    if (!defined('_JEXEC')) define('_JEXEC', 1);
-    if (!defined('JPATH_BASE')) define('JPATH_BASE', dirname(__FILE__));
+    // Criar aplicação
+    $container = \Joomla\CMS\Factory::getContainer();
+    $app = $container->get(\Joomla\CMS\Application\SiteApplication::class);
+    $app->initialise();
     
-    // Carregar Joomla
-    require_once JPATH_BASE . '/includes/defines.php';
-    require_once JPATH_BASE . '/includes/framework.php';
-    
-    jimport('joomla.application.application');
-    jimport('joomla.factory');
-    
-    // Obter objetos
-    if (class_exists('Joomla\CMS\Factory')) {
-        $app = Joomla\CMS\Factory::getApplication('site');
-        $user = Joomla\CMS\Factory::getUser();
-        $db = Joomla\CMS\Factory::getDbo();
-    } else {
-        $app = JFactory::getApplication('site');
-        $user = JFactory::getUser();
-        $db = JFactory::getDbo();
-    }
+    // Obter usuário
+    $user = \Joomla\CMS\Factory::getUser();
     
     // Verificar permissões
     if (!$user->authorise('core.admin')) {
-        retornarJSON(false, 'Acesso negado');
+        enviarJSON(false, 'Acesso negado');
     }
     
     // Obter dados
@@ -59,20 +55,26 @@ try {
     $status = isset($_POST['status']) ? (int)$_POST['status'] : 0;
     
     if ($id <= 0) {
-        retornarJSON(false, 'ID inválido');
+        enviarJSON(false, 'ID inválido');
     }
+    
+    // Obter banco
+    $db = \Joomla\CMS\Factory::getDbo();
     
     // Atualizar
     $query = $db->getQuery(true);
+    
     $query->update($db->quoteName('tbcex4414_agencias_estagio'))
         ->set($db->quoteName('status') . ' = ' . (int)$status)
+        ->set($db->quoteName('modified') . ' = NOW()')
+        ->set($db->quoteName('modified_by') . ' = ' . (int)$user->id)
         ->where($db->quoteName('id') . ' = ' . (int)$id);
     
     $db->setQuery($query);
     $db->execute();
     
-    retornarJSON(true, 'Status atualizado com sucesso');
+    enviarJSON(true, 'Status atualizado com sucesso');
     
 } catch (Exception $e) {
-    retornarJSON(false, 'Erro: ' . $e->getMessage());
+    enviarJSON(false, 'Erro: ' . $e->getMessage());
 }
