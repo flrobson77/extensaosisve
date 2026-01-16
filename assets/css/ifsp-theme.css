@@ -1,0 +1,674 @@
+/**
+ * IFSP Guarulhos - Tema Customizado
+ * Sistema de Vagas de Estágio
+ */
+
+/* ============================================
+   VARIÁVEIS DE CORES IFSP
+   ============================================ */
+:root {
+    /* Cores institucionais */
+    --ifsp-verde-principal: #006633;
+    --ifsp-verde-escuro: #004d26;
+    --ifsp-verde-claro: #00864d;
+    --ifsp-verde-hover: #005529;
+    
+    /* Cores neutras */
+    --cor-branco: #ffffff;
+    --cor-cinza-claro: #f5f7f9;
+    --cor-cinza-medio: #e0e0e0;
+    --cor-cinza-escuro: #666666;
+    --cor-texto: #333333;
+    
+    /* Cores de status */
+    --cor-sucesso: #28a745;
+    --cor-erro: #dc3545;
+    --cor-aviso: #ffc107;
+    --cor-info: #17a2b8;
+    
+    /* Sombras */
+    --sombra-leve: 0 2px 4px rgba(0,0,0,0.1);
+    --sombra-media: 0 4px 8px rgba(0,0,0,0.15);
+    --sombra-forte: 0 8px 16px rgba(0,0,0,0.2);
+    
+    /* Bordas */
+    --borda-radius: 4px;
+    --borda-radius-grande: 8px;
+}
+
+/* ============================================
+   RESET E BASE
+   ============================================ */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    color: var(--cor-texto);
+    line-height: 1.6;
+    background-color: var(--cor-cinza-claro);
+}
+
+/* ============================================
+   CONTAINER PRINCIPAL
+   ============================================ */
+.ifsp-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* ============================================
+   CABEÇALHO IFSP
+   ============================================ */
+.ifsp-header {
+    background: var(--ifsp-verde-principal);
+    color: var(--cor-branco);
+    padding: 20px 30px;
+    margin-bottom: 30px;
+    border-radius: var(--borda-radius);
+    box-shadow: var(--sombra-media);
+}
+
+.ifsp-header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.ifsp-header h1::before {
+    content: '🎓';
+    font-size: 32px;
+}
+
+.ifsp-subtitle {
+    margin: 8px 0 0 0;
+    font-size: 14px;
+    opacity: 0.9;
+    font-weight: normal;
+}
+
+/* ============================================
+   BREADCRUMB IFSP
+   ============================================ */
+.ifsp-breadcrumb {
+    background: var(--cor-branco);
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    border-radius: var(--borda-radius);
+    box-shadow: var(--sombra-leve);
+    font-size: 14px;
+}
+
+.ifsp-breadcrumb a {
+    color: var(--ifsp-verde-principal);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.ifsp-breadcrumb a:hover {
+    color: var(--ifsp-verde-hover);
+    text-decoration: underline;
+}
+
+.ifsp-breadcrumb span {
+    color: var(--cor-cinza-escuro);
+    margin: 0 8px;
+}
+
+/* ============================================
+   CARDS/BOXES IFSP
+   ============================================ */
+.ifsp-card {
+    background: var(--cor-branco);
+    border-radius: var(--borda-radius-grande);
+    box-shadow: var(--sombra-leve);
+    padding: 30px;
+    margin-bottom: 20px;
+    border-top: 4px solid var(--ifsp-verde-principal);
+    transition: box-shadow 0.3s;
+}
+
+.ifsp-card:hover {
+    box-shadow: var(--sombra-media);
+}
+
+.ifsp-card-header {
+    border-bottom: 2px solid var(--cor-cinza-medio);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.ifsp-card-title {
+    color: var(--ifsp-verde-principal);
+    font-size: 22px;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* ============================================
+   FORMULÁRIOS IFSP
+   ============================================ */
+.ifsp-form-group {
+    margin-bottom: 20px;
+}
+
+.ifsp-form-label {
+    display: block;
+    font-weight: bold;
+    color: var(--cor-texto);
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.ifsp-form-label .required {
+    color: var(--cor-erro);
+    margin-left: 4px;
+    font-weight: bold;
+}
+
+.ifsp-form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--cor-cinza-medio);
+    border-radius: var(--borda-radius);
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.3s;
+    background-color: var(--cor-branco);
+}
+
+.ifsp-form-control:focus {
+    outline: none;
+    border-color: var(--ifsp-verde-principal);
+    box-shadow: 0 0 0 3px rgba(0, 102, 51, 0.1);
+}
+
+.ifsp-form-control:disabled {
+    background-color: var(--cor-cinza-claro);
+    cursor: not-allowed;
+}
+
+.ifsp-form-text {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--cor-cinza-escuro);
+}
+
+/* ============================================
+   BOTÕES IFSP
+   ============================================ */
+.ifsp-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border: none;
+    border-radius: var(--borda-radius);
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    font-family: inherit;
+}
+
+.ifsp-btn-primary {
+    background: var(--ifsp-verde-principal);
+    color: var(--cor-branco);
+}
+
+.ifsp-btn-primary:hover {
+    background: var(--ifsp-verde-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-media);
+}
+
+.ifsp-btn-secondary {
+    background: var(--cor-cinza-escuro);
+    color: var(--cor-branco);
+}
+
+.ifsp-btn-secondary:hover {
+    background: #555555;
+}
+
+.ifsp-btn-success {
+    background: var(--cor-sucesso);
+    color: var(--cor-branco);
+}
+
+.ifsp-btn-danger {
+    background: var(--cor-erro);
+    color: var(--cor-branco);
+}
+
+.ifsp-btn-sm {
+    padding: 8px 16px;
+    font-size: 13px;
+}
+
+.ifsp-btn-lg {
+    padding: 15px 32px;
+    font-size: 16px;
+}
+
+.ifsp-btn-block {
+    display: block;
+    width: 100%;
+}
+
+.ifsp-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.ifsp-btn-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* ============================================
+   TABELAS IFSP
+   ============================================ */
+.ifsp-table-container {
+    background: var(--cor-branco);
+    border-radius: var(--borda-radius-grande);
+    box-shadow: var(--sombra-leve);
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.ifsp-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ifsp-table thead {
+    background: var(--ifsp-verde-principal);
+    color: var(--cor-branco);
+}
+
+.ifsp-table th {
+    padding: 15px;
+    text-align: left;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.ifsp-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--cor-cinza-medio);
+    font-size: 14px;
+}
+
+.ifsp-table tbody tr:hover {
+    background-color: var(--cor-cinza-claro);
+}
+
+.ifsp-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ============================================
+   BADGES/ETIQUETAS IFSP
+   ============================================ */
+.ifsp-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.ifsp-badge-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.ifsp-badge-danger {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.ifsp-badge-warning {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.ifsp-badge-info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.ifsp-badge-primary {
+    background: rgba(0, 102, 51, 0.1);
+    color: var(--ifsp-verde-principal);
+    border: 1px solid var(--ifsp-verde-claro);
+}
+
+/* ============================================
+   ALERTAS IFSP
+   ============================================ */
+.ifsp-alert {
+    padding: 15px 20px;
+    border-radius: var(--borda-radius);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+}
+
+.ifsp-alert-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.ifsp-alert-danger {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.ifsp-alert-warning {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.ifsp-alert-info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+/* ============================================
+   LOADING SPINNER IFSP
+   ============================================ */
+.ifsp-loading {
+    display: none;
+    text-align: center;
+    padding: 30px;
+}
+
+.ifsp-loading.active {
+    display: block;
+}
+
+.ifsp-spinner {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--cor-cinza-medio);
+    border-top-color: var(--ifsp-verde-principal);
+    border-radius: 50%;
+    animation: ifsp-spin 1s linear infinite;
+}
+
+@keyframes ifsp-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   CARROSSEL DE VAGAS
+   ============================================ */
+.ifsp-carousel-section {
+    margin-bottom: 40px;
+}
+
+.ifsp-carousel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background: linear-gradient(135deg, var(--ifsp-verde-principal) 0%, var(--ifsp-verde-escuro) 100%);
+    color: var(--cor-branco);
+    border-radius: var(--borda-radius-grande) var(--borda-radius-grande) 0 0;
+}
+
+.ifsp-carousel-header h3 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.ifsp-carousel-counter {
+    background: rgba(255,255,255,0.2);
+    padding: 6px 15px;
+    border-radius: 15px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.ifsp-vaga-card {
+    background: var(--cor-branco);
+    border-radius: var(--borda-radius-grande);
+    overflow: hidden;
+    box-shadow: var(--sombra-leve);
+    transition: all 0.3s;
+}
+
+.ifsp-vaga-card:hover {
+    box-shadow: var(--sombra-forte);
+    transform: translateY(-4px);
+}
+
+.ifsp-vaga-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    background: var(--cor-cinza-medio);
+}
+
+.ifsp-vaga-content {
+    padding: 25px;
+}
+
+.ifsp-vaga-title {
+    color: var(--ifsp-verde-principal);
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+}
+
+.ifsp-vaga-empresa {
+    color: var(--cor-cinza-escuro);
+    font-size: 14px;
+    margin: 0 0 15px 0;
+}
+
+.ifsp-vaga-description {
+    color: var(--cor-texto);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.ifsp-vaga-details {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.ifsp-vaga-detail-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 15px;
+    background: var(--cor-cinza-claro);
+    border-radius: 20px;
+    font-size: 13px;
+    color: var(--cor-texto);
+}
+
+.ifsp-vaga-prazo {
+    color: var(--cor-erro);
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* ============================================
+   PAGINAÇÃO
+   ============================================ */
+.ifsp-pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 30px 0;
+}
+
+.ifsp-pagination-item {
+    padding: 8px 15px;
+    border: 1px solid var(--cor-cinza-medio);
+    border-radius: var(--borda-radius);
+    background: var(--cor-branco);
+    color: var(--cor-texto);
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+}
+
+.ifsp-pagination-item:hover {
+    background: var(--ifsp-verde-principal);
+    color: var(--cor-branco);
+    border-color: var(--ifsp-verde-principal);
+}
+
+.ifsp-pagination-item.active {
+    background: var(--ifsp-verde-principal);
+    color: var(--cor-branco);
+    border-color: var(--ifsp-verde-principal);
+}
+
+/* ============================================
+   FOOTER IFSP
+   ============================================ */
+.ifsp-footer {
+    background: var(--cor-cinza-claro);
+    padding: 20px;
+    text-align: center;
+    border-top: 3px solid var(--ifsp-verde-principal);
+    margin-top: 40px;
+    color: var(--cor-cinza-escuro);
+    font-size: 13px;
+}
+
+.ifsp-footer a {
+    color: var(--ifsp-verde-principal);
+    text-decoration: none;
+}
+
+.ifsp-footer a:hover {
+    text-decoration: underline;
+}
+
+/* ============================================
+   RESPONSIVIDADE
+   ============================================ */
+@media (max-width: 768px) {
+    .ifsp-container {
+        padding: 15px;
+    }
+    
+    .ifsp-header h1 {
+        font-size: 22px;
+    }
+    
+    .ifsp-card {
+        padding: 20px;
+    }
+    
+    .ifsp-btn-group {
+        flex-direction: column;
+    }
+    
+    .ifsp-btn-group .ifsp-btn {
+        width: 100%;
+    }
+    
+    .ifsp-table-container {
+        overflow-x: auto;
+    }
+    
+    .ifsp-vaga-details {
+        flex-direction: column;
+    }
+}
+
+/* ============================================
+   MODO ESCURO (OPCIONAL)
+   ============================================ */
+@media (prefers-color-scheme: dark) {
+    .ifsp-dark-mode {
+        --cor-texto: #e0e0e0;
+        --cor-cinza-claro: #1e1e1e;
+        --cor-branco: #2d2d2d;
+        --cor-cinza-medio: #3d3d3d;
+    }
+}
+
+/* ============================================
+   ANIMAÇÕES
+   ============================================ */
+@keyframes ifsp-fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ifsp-fade-in {
+    animation: ifsp-fadeIn 0.5s ease-out;
+}
+
+/* ============================================
+   UTILITÁRIOS
+   ============================================ */
+.ifsp-text-center { text-align: center; }
+.ifsp-text-right { text-align: right; }
+.ifsp-text-left { text-align: left; }
+
+.ifsp-mt-1 { margin-top: 10px; }
+.ifsp-mt-2 { margin-top: 20px; }
+.ifsp-mt-3 { margin-top: 30px; }
+
+.ifsp-mb-1 { margin-bottom: 10px; }
+.ifsp-mb-2 { margin-bottom: 20px; }
+.ifsp-mb-3 { margin-bottom: 30px; }
+
+.ifsp-p-1 { padding: 10px; }
+.ifsp-p-2 { padding: 20px; }
+.ifsp-p-3 { padding: 30px; }
+
+.ifsp-d-none { display: none; }
+.ifsp-d-block { display: block; }
+.ifsp-d-flex { display: flex; }
+
+.ifsp-flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ifsp-flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

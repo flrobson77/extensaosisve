@@ -1,0 +1,311 @@
+<!-- INCLUIR O CSS DO IFSP -->
+<link rel="stylesheet" href="/media/com_vagasestagio/css/ifsp-theme.css">
+
+<!-- CABEÇALHO IFSP -->
+<div class="ifsp-header">
+    <h1>Sistema de Vagas de Estágio</h1>
+    <p class="ifsp-subtitle">IFSP Campus Guarulhos - Coordenadoria de Extensão</p>
+</div>
+
+<!-- BREADCRUMB -->
+<div class="ifsp-breadcrumb">
+    <a href="/">Início</a>
+    <span>›</span>
+    <a href="/extensao">Extensão</a>
+    <span>›</span>
+    <span>Gerenciar Agências</span>
+</div>
+
+<!-- CONTAINER PRINCIPAL -->
+<div class="ifsp-container">
+    
+    <!-- CARD DO FORMULÁRIO -->
+    <div class="ifsp-card">
+        <div class="ifsp-card-header">
+            <h2 class="ifsp-card-title">📋 Cadastro de Agências de Estágio</h2>
+        </div>
+        
+        <!-- MENSAGENS -->
+        <div id="mensagem" class="ifsp-alert" style="display: none;"></div>
+        
+        <!-- LOADING -->
+        <div id="loading" class="ifsp-loading">
+            <div class="ifsp-spinner"></div>
+            <p>Processando...</p>
+        </div>
+        
+        <!-- FORMULÁRIO -->
+        <form id="formAgencia" method="post">
+            <input type="hidden" name="id" id="agencia_id" value="">
+            
+            <div class="ifsp-form-group">
+                <label class="ifsp-form-label" for="nome">
+                    Nome da Agência de Estágio
+                    <span class="required">*</span>
+                </label>
+                <input type="text" 
+                       id="nome" 
+                       name="nome" 
+                       class="ifsp-form-control" 
+                       required 
+                       placeholder="Ex: Centro de Integração Empresa-Escola">
+            </div>
+
+            <div class="ifsp-form-group">
+                <label class="ifsp-form-label" for="sigla">
+                    Sigla
+                    <span class="required">*</span>
+                </label>
+                <input type="text" 
+                       id="sigla" 
+                       name="sigla" 
+                       class="ifsp-form-control" 
+                       required 
+                       placeholder="Ex: CIEE" 
+                       maxlength="20">
+                <small class="ifsp-form-text">
+                    Sigla curta para identificação (ex: CIEE, NUBE, IEL)
+                </small>
+            </div>
+
+            <div class="ifsp-form-group">
+                <label class="ifsp-form-label" for="site">
+                    URL da Empresa
+                </label>
+                <input type="url" 
+                       id="site" 
+                       name="site" 
+                       class="ifsp-form-control" 
+                       placeholder="https://www.exemplo.com.br">
+                <small class="ifsp-form-text">
+                    Endereço completo do site da agência
+                </small>
+            </div>
+
+            <div class="ifsp-form-group">
+                <label class="ifsp-form-label" for="contato">
+                    Pessoa de Contato
+                </label>
+                <input type="text" 
+                       id="contato" 
+                       name="contato" 
+                       class="ifsp-form-control" 
+                       placeholder="Nome do responsável">
+            </div>
+
+            <div class="ifsp-form-group">
+                <label class="ifsp-form-label" for="email">
+                    E-mail
+                </label>
+                <input type="email" 
+                       id="email" 
+                       name="email" 
+                       class="ifsp-form-control" 
+                       placeholder="contato@agencia.com.br">
+            </div>
+
+            <div class="ifsp-form-group">
+                <label class="ifsp-form-label" for="telefone">
+                    Telefone
+                </label>
+                <input type="tel" 
+                       id="telefone" 
+                       name="telefone" 
+                       class="ifsp-form-control" 
+                       placeholder="(11) 99999-9999">
+            </div>
+
+            <div class="ifsp-btn-group">
+                <button type="submit" class="ifsp-btn ifsp-btn-primary">
+                    💾 Salvar Agência
+                </button>
+                <button type="button" class="ifsp-btn ifsp-btn-secondary" onclick="limparFormulario()">
+                    🔄 Limpar
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- TABELA DE AGÊNCIAS -->
+    <div class="ifsp-card ifsp-mt-3">
+        <div class="ifsp-card-header">
+            <h2 class="ifsp-card-title">📊 Agências Cadastradas</h2>
+        </div>
+        
+        <div class="ifsp-table-container">
+            <table class="ifsp-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Sigla</th>
+                        <th>Contato</th>
+                        <th>Telefone</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="listaAgencias">
+                    <tr>
+                        <td colspan="7" class="ifsp-text-center">
+                            <div class="ifsp-loading active">
+                                <div class="ifsp-spinner"></div>
+                                <p>Carregando agências...</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<div class="ifsp-footer">
+    <p>Sistema de Vagas de Estágio - IFSP Campus Guarulhos</p>
+    <p>
+        <a href="https://gru.ifsp.edu.br" target="_blank">gru.ifsp.edu.br</a> | 
+        <a href="mailto:extensao@ifsp.edu.br">extensao@ifsp.edu.br</a>
+    </p>
+</div>
+
+<script>
+// JavaScript atualizado
+document.addEventListener('DOMContentLoaded', function() {
+    carregarAgencias();
+});
+
+document.getElementById('formAgencia').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    var formData = new FormData(this);
+    var loading = document.getElementById('loading');
+    var mensagem = document.getElementById('mensagem');
+    
+    // Mostrar loading
+    loading.classList.add('active');
+    mensagem.style.display = 'none';
+    
+    // Enviar via AJAX
+    fetch('/salvar_agencia.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        loading.classList.remove('active');
+        
+        mensagem.textContent = data.message;
+        mensagem.className = 'ifsp-alert ' + (data.success ? 'ifsp-alert-success' : 'ifsp-alert-danger');
+        mensagem.style.display = 'flex';
+        
+        if (data.success) {
+            limparFormulario();
+            carregarAgencias();
+            
+            setTimeout(function() {
+                mensagem.style.display = 'none';
+            }, 3000);
+        }
+    })
+    .catch(error => {
+        loading.classList.remove('active');
+        mensagem.textContent = 'Erro ao salvar: ' + error;
+        mensagem.className = 'ifsp-alert ifsp-alert-danger';
+        mensagem.style.display = 'flex';
+    });
+});
+
+function limparFormulario() {
+    document.getElementById('formAgencia').reset();
+    document.getElementById('agencia_id').value = '';
+}
+
+function carregarAgencias() {
+    fetch('/listar_agencias.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                mostrarAgencias(data.agencias);
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao carregar agências:', error);
+            document.getElementById('listaAgencias').innerHTML = 
+                '<tr><td colspan="7" class="ifsp-text-center">Erro ao carregar dados</td></tr>';
+        });
+}
+
+function mostrarAgencias(agencias) {
+    var html = '';
+    
+    if (agencias.length === 0) {
+        html = '<tr><td colspan="7" class="ifsp-text-center" style="padding:30px;">Nenhuma agência cadastrada</td></tr>';
+    } else {
+        agencias.forEach(function(agencia) {
+            html += '<tr>';
+            html += '<td>' + agencia.id + '</td>';
+            html += '<td><strong>' + agencia.nome + '</strong></td>';
+            html += '<td>' + agencia.sigla + '</td>';
+            html += '<td>' + (agencia.contato || '-') + '</td>';
+            html += '<td>' + (agencia.telefone || '-') + '</td>';
+            html += '<td><span class="ifsp-badge ' + (agencia.status == 1 ? 'ifsp-badge-success' : 'ifsp-badge-danger') + '">';
+            html += (agencia.status == 1 ? 'Ativo' : 'Inativo') + '</span></td>';
+            html += '<td>';
+            html += '<div class="ifsp-btn-group">';
+            html += '<button class="ifsp-btn ifsp-btn-primary ifsp-btn-sm" onclick="editarAgencia(' + agencia.id + ')">✏️ Editar</button>';
+            html += '<button class="ifsp-btn ifsp-btn-secondary ifsp-btn-sm" onclick="toggleStatus(' + agencia.id + ', ' + agencia.status + ')">';
+            html += (agencia.status == 1 ? '🚫 Desativar' : '✅ Ativar') + '</button>';
+            html += '</div>';
+            html += '</td>';
+            html += '</tr>';
+        });
+    }
+    
+    document.getElementById('listaAgencias').innerHTML = html;
+}
+
+function editarAgencia(id) {
+    fetch('/listar_agencias.php?id=' + id)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.agencias.length > 0) {
+                var agencia = data.agencias[0];
+                document.getElementById('agencia_id').value = agencia.id;
+                document.getElementById('nome').value = agencia.nome;
+                document.getElementById('sigla').value = agencia.sigla;
+                document.getElementById('site').value = agencia.site || '';
+                document.getElementById('contato').value = agencia.contato || '';
+                document.getElementById('email').value = agencia.email || '';
+                document.getElementById('telefone').value = agencia.telefone || '';
+                
+                // Scroll suave para o formulário
+                document.querySelector('.ifsp-card').scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+}
+
+function toggleStatus(id, statusAtual) {
+    if (confirm('Deseja ' + (statusAtual == 1 ? 'desativar' : 'ativar') + ' esta agência?')) {
+        var formData = new FormData();
+        formData.append('id', id);
+        formData.append('status', statusAtual == 1 ? 0 : 1);
+        
+        fetch('/toggle_agencia.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                carregarAgencias();
+            } else {
+                alert(data.message);
+            }
+        });
+    }
+}
+</script>
