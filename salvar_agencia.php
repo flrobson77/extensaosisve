@@ -2,6 +2,7 @@
 /**
  * Arquivo: salvar_agencia.php
  * Descrição: Processa cadastro de agências de estágio
+ * Local: Raiz do Joomla
  */
 
 // Não permitir acesso direto
@@ -76,7 +77,7 @@ try {
             $db->quoteName('modified_by') . ' = ' . $user->id
         );
 
-        $query->update($db->quoteName('#__agencias_estagio'))
+        $query->update($db->quoteName('tbcex4414_agencias_estagio'))
             ->set($fields)
             ->where($db->quoteName('id') . ' = ' . $id);
 
@@ -95,7 +96,7 @@ try {
         // Verificar se sigla já existe
         $queryCheck = $db->getQuery(true);
         $queryCheck->select('COUNT(*)')
-            ->from($db->quoteName('#__agencias_estagio'))
+            ->from($db->quoteName('tbcex4414_agencias_estagio'))
             ->where($db->quoteName('sigla') . ' = ' . $db->quote($sigla));
         
         $db->setQuery($queryCheck);
@@ -108,7 +109,7 @@ try {
         // Obter próximo ordering
         $queryOrdering = $db->getQuery(true);
         $queryOrdering->select('MAX(ordering)')
-            ->from($db->quoteName('#__agencias_estagio'));
+            ->from($db->quoteName('tbcex4414_agencias_estagio'));
         
         $db->setQuery($queryOrdering);
         $maxOrdering = (int)$db->loadResult();
@@ -129,7 +130,7 @@ try {
             $user->id
         );
 
-        $query->insert($db->quoteName('#__agencias_estagio'))
+        $query->insert($db->quoteName('tbcex4414_agencias_estagio'))
             ->columns($db->quoteName($columns))
             ->values(implode(',', $values));
 

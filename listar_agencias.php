@@ -25,7 +25,7 @@ $query = $db->getQuery(true);
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 $query->select('*')
-    ->from($db->quoteName('#__agencias_estagio'));
+    ->from($db->quoteName('tbcex4414_agencias_estagio'));
 
 if ($id > 0) {
     $query->where($db->quoteName('id') . ' = ' . $id);

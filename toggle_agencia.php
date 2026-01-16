@@ -27,7 +27,7 @@ if ($id <= 0) {
 $db = JFactory::getDbo();
 $query = $db->getQuery(true);
 
-$query->update($db->quoteName('#__agencias_estagio'))
+$query->update($db->quoteName('tbcex4414_agencias_estagio'))
     ->set($db->quoteName('status') . ' = ' . $status)
     ->where($db->quoteName('id') . ' = ' . $id);
 
