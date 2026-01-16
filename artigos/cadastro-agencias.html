@@ -1,6 +1,23 @@
 <script>
-    var BASE_URL = window.location.origin + '/';
-    
+// Detectar se tem index.php na URL
+var currentPath = window.location.pathname;
+var hasIndexPhp = currentPath.includes('/index.php/');
+
+var BASE_URL;
+
+if (hasIndexPhp) {
+    // Joomla com index.php visível
+    // Remove tudo depois de index.php
+    var parts = currentPath.split('/index.php/')[0];
+    BASE_URL = window.location.origin + parts + '/';
+} else {
+    // Joomla com URLs limpas
+    BASE_URL = window.location.origin + '/';
+}
+
+console.log('🌐 BASE_URL detectada:', BASE_URL);
+console.log('📍 Pathname:', currentPath);
+console.log('🔍 Tem index.php?', hasIndexPhp);
 </script>
 
 <!-- CARREGAR CSS EXTERNOS -->
