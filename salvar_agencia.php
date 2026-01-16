@@ -2,70 +2,122 @@
 /**
  * Arquivo: salvar_agencia.php
  * Descrição: Processa cadastro de agências de estágio
- * Local: Raiz do Joomla
+ * IFSP Campus Guarulhos
  */
 
-// Não permitir acesso direto
-define('_JEXEC', 1);
+// Desativar avisos
+error_reporting(E_ERROR | E_PARSE);
+ini_set('display_errors', 0);
 
-// Carregar o framework do Joomla
-define('JPATH_BASE', dirname(__FILE__));
-require_once JPATH_BASE . '/includes/defines.php';
-require_once JPATH_BASE . '/includes/framework.php';
+// Headers
+header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
 
-// Criar aplicação
-$app = JFactory::getApplication('site');
-
-// Verificar se usuário está logado e é administrador
-$user = JFactory::getUser();
-
-if (!$user->id) {
-    die(json_encode(['success' => false, 'message' => 'Você precisa estar logado']));
+// Função para retornar JSON
+function retornarJSON($success, $message = '', $id = null) {
+    $response = array(
+        'success' => $success,
+        'message' => $message
+    );
+    
+    if ($id !== null) {
+        $response['id'] = $id;
+    }
+    
+    echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit;
 }
 
-// Verificar se é administrador
-if (!$user->authorise('core.admin')) {
-    die(json_encode(['success' => false, 'message' => 'Acesso negado. Apenas administradores.']));
-}
-
-// Processar apenas requisições POST
+// Verificar método
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    die(json_encode(['success' => false, 'message' => 'Método não permitido']));
+    retornarJSON(false, 'Método não permitido. Use POST.');
 }
-
-// Obter dados do POST
-$nome = isset($_POST['nome']) ? trim($_POST['nome']) : '';
-$sigla = isset($_POST['sigla']) ? strtoupper(trim($_POST['sigla'])) : '';
-$site = isset($_POST['site']) ? trim($_POST['site']) : '';
-$contato = isset($_POST['contato']) ? trim($_POST['contato']) : '';
-$email = isset($_POST['email']) ? trim($_POST['email']) : '';
-$telefone = isset($_POST['telefone']) ? trim($_POST['telefone']) : '';
-$id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
-
-// Validar campos obrigatórios
-if (empty($nome)) {
-    die(json_encode(['success' => false, 'message' => 'Nome da agência é obrigatório']));
-}
-
-if (empty($sigla)) {
-    die(json_encode(['success' => false, 'message' => 'Sigla é obrigatória']));
-}
-
-if (!empty($site) && !filter_var($site, FILTER_VALIDATE_URL)) {
-    die(json_encode(['success' => false, 'message' => 'URL inválida']));
-}
-
-if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    die(json_encode(['success' => false, 'message' => 'Email inválido']));
-}
-
-// Obter banco de dados
-$db = JFactory::getDbo();
-$query = $db->getQuery(true);
 
 try {
+    // Definir constantes do Joomla
+    if (!defined('_JEXEC')) {
+        define('_JEXEC', 1);
+    }
+    
+    if (!defined('JPATH_BASE')) {
+        define('JPATH_BASE', dirname(__FILE__));
+    }
+    
+    // Verificar se estamos na raiz do Joomla
+    $definesPath = JPATH_BASE . '/includes/defines.php';
+    $frameworkPath = JPATH_BASE . '/includes/framework.php';
+    
+    if (!file_exists($definesPath) || !file_exists($frameworkPath)) {
+        retornarJSON(false, 'Erro: Script não está na raiz do Joomla.');
+    }
+    
+    // Carregar framework do Joomla
+    require_once $definesPath;
+    require_once $frameworkPath;
+    
+    // Importar classes necessárias
+    jimport('joomla.application.application');
+    jimport('joomla.factory');
+    
+    // Criar aplicação - Compatível com Joomla 3 e 4
+    try {
+        if (class_exists('Joomla\CMS\Factory')) {
+            // Joomla 4
+            $app = Joomla\CMS\Factory::getApplication('site');
+            $user = Joomla\CMS\Factory::getUser();
+            $db = Joomla\CMS\Factory::getDbo();
+        } else {
+            // Joomla 3
+            $app = JFactory::getApplication('site');
+            $user = JFactory::getUser();
+            $db = JFactory::getDbo();
+        }
+    } catch (Exception $e) {
+        retornarJSON(false, 'Erro ao iniciar Joomla: ' . $e->getMessage());
+    }
+    
+    // Verificar autenticação
+    if (!$user->id) {
+        retornarJSON(false, 'Você precisa estar logado.');
+    }
+    
+    if (!$user->authorise('core.admin')) {
+        retornarJSON(false, 'Acesso negado. Apenas administradores.');
+    }
+    
+    // Obter dados do POST
+    $nome = isset($_POST['nome']) ? trim($_POST['nome']) : '';
+    $sigla = isset($_POST['sigla']) ? strtoupper(trim($_POST['sigla'])) : '';
+    $site = isset($_POST['site']) ? trim($_POST['site']) : '';
+    $contato = isset($_POST['contato']) ? trim($_POST['contato']) : '';
+    $email = isset($_POST['email']) ? trim($_POST['email']) : '';
+    $telefone = isset($_POST['telefone']) ? trim($_POST['telefone']) : '';
+    $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+    
+    // Validações
+    if (empty($nome)) {
+        retornarJSON(false, 'Nome da agência é obrigatório');
+    }
+    
+    if (empty($sigla)) {
+        retornarJSON(false, 'Sigla é obrigatória');
+    }
+    
+    if (!empty($site) && !filter_var($site, FILTER_VALIDATE_URL)) {
+        retornarJSON(false, 'URL inválida');
+    }
+    
+    if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        retornarJSON(false, 'Email inválido');
+    }
+    
+    // Obter query
+    $query = $db->getQuery(true);
+    
     if ($id > 0) {
-        // ATUALIZAR agência existente
+        // ATUALIZAR
         $fields = array(
             $db->quoteName('nome') . ' = ' . $db->quote($nome),
             $db->quoteName('sigla') . ' = ' . $db->quote($sigla),
@@ -74,24 +126,20 @@ try {
             $db->quoteName('email') . ' = ' . $db->quote($email),
             $db->quoteName('telefone') . ' = ' . $db->quote($telefone),
             $db->quoteName('modified') . ' = NOW()',
-            $db->quoteName('modified_by') . ' = ' . $user->id
+            $db->quoteName('modified_by') . ' = ' . (int)$user->id
         );
-
+        
         $query->update($db->quoteName('tbcex4414_agencias_estagio'))
             ->set($fields)
-            ->where($db->quoteName('id') . ' = ' . $id);
-
+            ->where($db->quoteName('id') . ' = ' . (int)$id);
+        
         $db->setQuery($query);
         $db->execute();
-
-        echo json_encode([
-            'success' => true, 
-            'message' => 'Agência atualizada com sucesso!',
-            'id' => $id
-        ]);
-
+        
+        retornarJSON(true, 'Agência atualizada com sucesso!', $id);
+        
     } else {
-        // INSERIR nova agência
+        // INSERIR
         
         // Verificar se sigla já existe
         $queryCheck = $db->getQuery(true);
@@ -100,12 +148,12 @@ try {
             ->where($db->quoteName('sigla') . ' = ' . $db->quote($sigla));
         
         $db->setQuery($queryCheck);
-        $existe = $db->loadResult();
-
+        $existe = (int)$db->loadResult();
+        
         if ($existe > 0) {
-            die(json_encode(['success' => false, 'message' => 'Já existe uma agência com esta sigla']));
+            retornarJSON(false, 'Já existe uma agência com esta sigla');
         }
-
+        
         // Obter próximo ordering
         $queryOrdering = $db->getQuery(true);
         $queryOrdering->select('MAX(ordering)')
@@ -114,9 +162,14 @@ try {
         $db->setQuery($queryOrdering);
         $maxOrdering = (int)$db->loadResult();
         $novoOrdering = $maxOrdering + 1;
-
+        
         // Inserir
-        $columns = array('nome', 'sigla', 'site', 'contato', 'email', 'telefone', 'status', 'ordering', 'created', 'created_by');
+        $columns = array(
+            'nome', 'sigla', 'site', 'contato', 
+            'email', 'telefone', 'status', 'ordering', 
+            'created', 'created_by'
+        );
+        
         $values = array(
             $db->quote($nome),
             $db->quote($sigla),
@@ -127,28 +180,21 @@ try {
             1,
             $novoOrdering,
             'NOW()',
-            $user->id
+            (int)$user->id
         );
-
+        
         $query->insert($db->quoteName('tbcex4414_agencias_estagio'))
             ->columns($db->quoteName($columns))
             ->values(implode(',', $values));
-
+        
         $db->setQuery($query);
         $db->execute();
-
+        
         $novoId = $db->insertid();
-
-        echo json_encode([
-            'success' => true, 
-            'message' => 'Agência cadastrada com sucesso!',
-            'id' => $novoId
-        ]);
+        
+        retornarJSON(true, 'Agência cadastrada com sucesso!', $novoId);
     }
-
+    
 } catch (Exception $e) {
-    echo json_encode([
-        'success' => false, 
-        'message' => 'Erro ao salvar: ' . $e->getMessage()
-    ]);
+    retornarJSON(false, 'Erro: ' . $e->getMessage());
 }

@@ -1,7 +1,15 @@
 /**
  * JavaScript para Administração de Agências
- * IFSP Campus Guarulhos - Sistema de Vagas de Estágio
  */
+
+// BASE_URL já foi definido no HTML
+// Só validar se existe
+if (typeof BASE_URL === 'undefined') {
+    console.error('❌ ERRO: BASE_URL não foi definida no HTML!');
+    alert('Erro de configuração. Entre em contato com o administrador.');
+}
+
+console.log('🌐 Base URL:', BASE_URL);
 
 // ============================================
 // VARIÁVEIS GLOBAIS
@@ -161,7 +169,9 @@ function carregarAgencias() {
         tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><div class="spinner"></div><p>Carregando...</p></td></tr>';
     }
     
-    fetch(BASE_URL + 'listar_agencias.php')
+    fetch(BASE_URL + 'listar_agencias.php' , {
+        method: 'POST'
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Erro ao buscar agências');
