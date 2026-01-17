@@ -1,10 +1,4 @@
--- Substituir PREFIXO_ pelo seu prefixo (ex: tbcex4414_)
-
--- Verificar se tabela existe
-SHOW TABLES LIKE '%vagas_estagio';
-
--- Se não existir, criar:
-CREATE TABLE IF NOT EXISTS `tbcex4414_vagas_estagio` (
+CREATE TABLE `tbcex4414_vagas_estagio` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `agencia_id` INT(11) UNSIGNED NOT NULL,
   `codigo_vaga` VARCHAR(50) DEFAULT NULL,

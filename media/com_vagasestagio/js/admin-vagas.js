@@ -7,8 +7,8 @@
 (function() {
     'use strict';
     
-    // Configuração
-    const BASE_URL = (typeof BASE_URL !== 'undefined') ? BASE_URL : (window.location.origin + '/');
+    // Configuração - CORRIGIDO: acessar window.BASE_URL
+    const BASE_URL = (typeof window.BASE_URL !== 'undefined') ? window.BASE_URL : (window.location.origin + '/');
     
     console.log('📋 Sistema de Gerenciamento de Vagas - v1.0');
     console.log('🎓 IFSP Campus Guarulhos - 2026');
@@ -23,7 +23,7 @@
      * Inicializar quando DOM estiver pronto
      */
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('Sistema de Vagas carregado');
+        console.log('✅ Sistema de Vagas carregado');
         
         // Carregar agências para o select
         carregarAgencias();
@@ -50,18 +50,26 @@
     function carregarAgencias() {
         const url = BASE_URL + 'listar_agencias.php';
         
+        console.log('🔄 Carregando agências de:', url);
+        
         fetch(url)
-            .then(response => response.json())
+            .then(response => {
+                console.log('📡 Resposta recebida:', response.status);
+                return response.json();
+            })
             .then(data => {
+                console.log('📦 Dados das agências:', data);
+                
                 if (data.success) {
                     agenciasData = data.agencias;
+                    console.log('✅ Total de agências:', agenciasData.length);
                     popularSelectAgencias();
                 } else {
-                    console.error('Erro ao carregar agências:', data.message);
+                    console.error('❌ Erro ao carregar agências:', data.message);
                 }
             })
             .catch(error => {
-                console.error('Erro ao carregar agências:', error);
+                console.error('❌ Erro ao carregar agências:', error);
             });
     }
     
@@ -70,20 +78,31 @@
      */
     function popularSelectAgencias() {
         const select = document.getElementById('agencia_id');
-        if (!select) return;
+        if (!select) {
+            console.error('❌ Select agencia_id não encontrado!');
+            return;
+        }
+        
+        console.log('📝 Populando select de agências...');
         
         // Limpar options
         select.innerHTML = '<option value="">Selecione uma agência</option>';
         
         // Adicionar agências ativas
+        let agenciasAtivas = 0;
+        
         agenciasData.forEach(agencia => {
             if (agencia.status == 1) {
                 const option = document.createElement('option');
                 option.value = agencia.id;
                 option.textContent = agencia.nome + ' (' + agencia.sigla + ')';
                 select.appendChild(option);
+                agenciasAtivas++;
+                console.log('➕ Agência adicionada:', agencia.nome);
             }
         });
+        
+        console.log('✅ Total de agências ativas no select:', agenciasAtivas);
     }
     
     /**
@@ -113,7 +132,6 @@
     function setupFileUploads() {
         // Upload de imagem
         const inputImagem = document.getElementById('imagem');
-        const labelImagem = document.querySelector('label[for="imagem"]');
         const nomeImagem = document.getElementById('nome-imagem');
         
         if (inputImagem) {
@@ -204,7 +222,7 @@
      * Salvar vaga
      */
     function salvarVaga() {
-        console.log('Salvando vaga...');
+        console.log('💾 Salvando vaga...');
         
         // Validar formulário
         if (!validarFormulario()) {
@@ -225,13 +243,15 @@
         // Enviar para o servidor
         const url = BASE_URL + 'salvar_vaga.php';
         
+        console.log('📤 Enviando para:', url);
+        
         fetch(url, {
             method: 'POST',
             body: formData
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Resposta do servidor:', data);
+            console.log('📥 Resposta do servidor:', data);
             
             if (data.success) {
                 mostrarMensagem('success', data.message);
@@ -242,7 +262,7 @@
             }
         })
         .catch(error => {
-            console.error('Erro ao salvar vaga:', error);
+            console.error('❌ Erro ao salvar vaga:', error);
             mostrarMensagem('error', 'Erro ao salvar vaga. Tente novamente.');
         })
         .finally(() => {
@@ -316,14 +336,14 @@
      * Carregar vagas
      */
     function carregarVagas() {
-        console.log('Carregando vagas...');
+        console.log('📋 Carregando vagas...');
         
         const url = BASE_URL + 'listar_vagas.php';
         
         fetch(url)
             .then(response => response.json())
             .then(data => {
-                console.log('Vagas carregadas:', data);
+                console.log('📦 Vagas carregadas:', data);
                 
                 if (data.success) {
                     vagasData = data.vagas;
@@ -334,7 +354,7 @@
                 }
             })
             .catch(error => {
-                console.error('Erro ao carregar vagas:', error);
+                console.error('❌ Erro ao carregar vagas:', error);
                 mostrarMensagem('error', 'Erro ao carregar vagas');
             });
     }
@@ -409,7 +429,7 @@
      * Editar vaga
      */
     window.editarVaga = function(id) {
-        console.log('Editando vaga:', id);
+        console.log('✏️ Editando vaga:', id);
         
         const vaga = vagasData.find(v => v.id == id);
         if (!vaga) {
@@ -474,7 +494,7 @@
             return;
         }
         
-        console.log('Alternando status da vaga:', id, 'para', novoStatus);
+        console.log('🔄 Alternando status da vaga:', id, 'para', novoStatus);
         
         mostrarLoading(true);
         
@@ -497,7 +517,7 @@
             }
         })
         .catch(error => {
-            console.error('Erro ao alterar status:', error);
+            console.error('❌ Erro ao alterar status:', error);
             mostrarMensagem('error', 'Erro ao alterar status da vaga');
         })
         .finally(() => {
@@ -562,7 +582,9 @@
         setTimeout(() => {
             div.style.opacity = '0';
             setTimeout(() => {
-                container.removeChild(div);
+                if (container.contains(div)) {
+                    container.removeChild(div);
+                }
             }, 300);
         }, 5000);
     }
